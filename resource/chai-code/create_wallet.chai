@@ -1,0 +1,58 @@
+// puts(helloWorld("Bob"));
+// create wallet
+// - public key or address
+// - amount
+class Wallet 
+{
+  // user data
+  var public_key;
+  var amount; 
+
+  // constructor
+  // def Wallet(x)
+  // {
+  //   this.amount = x
+  // }
+
+  def Wallet()
+  {
+  }
+  
+  // // method
+  // def getStuff(y)
+  // {
+  //   return this.amount + y
+  // }
+
+  // def getAmount()
+  // {
+  //   return this.amount;
+  // }
+}
+
+// var obj = Wallet(10)
+// obj.getStuff(15) // returns 25
+// print("Print objdata ${obj.amount}")
+// var s = puts(SizeOf(to_string(obj)))
+// print("Sizeof ${s}")
+
+// var wallet = Wallet("10")
+// wallet.getStuff("15")
+var wallet = Wallet()
+wallet.public_key = "public_key"
+wallet.amount = 155
+var w_json = to_json(wallet)
+var w_json_size = SizeOf(w_json)
+print("Json size ${w_json_size}")
+print("Obj ${w_json_size}")
+print(w_json)
+var wallet_des = from_json(w_json)
+print("Deser json")
+print(wallet_des)
+// print(wallet_des.public_key)
+// print(wallet_des.amount)
+print("Try map wallet")
+var map_wallet = ["amount":0, "public_key":""] 
+map_wallet["amount"] = 93
+map_wallet["public_key"] = "some_key"
+print("JSON from map ${to_json(map_wallet)}")
