@@ -1,0 +1,15 @@
+// - public key or address
+// - amount
+print("Try map wallet")
+var map_wallet = ["amount":0, "public_key":""] 
+map_wallet["amount"] = 93
+map_wallet["public_key"] = "some_key"
+var json = to_json(map_wallet)
+print("JSON from map ${json}")
+
+print("Wallet from JSON")
+var m_wal_from = from_json(json)
+print("Amount from json : ${m_wal_from["amount"]}")
+print("Key from json : ${m_wal_from["public_key"]}")
+
+

@@ -23,6 +23,10 @@ enable_testing()
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} CONAN_PKG::chaiscript)
 
+set(EX_EASY_CHAIN_TEST easy_chain_test)
+add_executable(${EX_EASY_CHAIN_TEST} easy-chain-test.cpp)
+target_link_libraries(${EX_EASY_CHAIN_TEST} CONAN_PKG::chaiscript)
+
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${PROJECT_SOURCE_DIR}/resource/"
