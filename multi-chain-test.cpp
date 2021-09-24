@@ -3,13 +3,20 @@
 #include <unordered_map>
 #include <string>
 
+
 using namespace std::chrono;
 
 #include <chaiscript/chaiscript.hpp>
 
+#include "threads-utils.h"
+
+auto lamda_multi_thread = l_thread_data<std::function<void(size_t, size_t)>>;
+std::mutex mutex_chain;
+
 std::unordered_map<uint64_t, std::string> chain;
 void put(uint64_t id, std::string value)
 {
+    std::lock_guard<std::mutex> l(mutex_chain);
     chain.insert({id, value});
 }
 
@@ -18,9 +25,8 @@ std::string get(uint64_t id)
     return chain[id];
 }
 
-
-
 std::atomic<uint64_t> id{0};
+
 uint64_t get_id()
 {
     return ++id;
@@ -44,13 +50,15 @@ std::string receive_json()
     return get_json_create_wallet(data);
 }
 
+std::atomic<uint64_t> smart_ex_count{0};
 
 int main(int ac, char** av) {
     std::cout << "Start chain test" << std::endl;    
-    auto count = 100000;
+    auto count = 160000;
     if (ac == 2)
         count = std::stoi(av[1]);
     std::cout << "Count " << count << std::endl;
+
     
     chain.insert({id++, "genesis"});
 
@@ -135,10 +143,23 @@ int main(int ac, char** av) {
         chai.add(chaiscript::fun(&receive_json), "receive_json");
     // auto count = 1'000'000;
     auto start = system_clock::now();
-    for (int i = 0; i < count; i++){
-        chai.eval(chain[smart_id]);
-    }
+    // for (int i = 0; i < count; i++){
+    //     chai.eval(chain[smart_id]);
+    // }
+
+    lamda_multi_thread([&chai, &smart_id](size_t i, size_t max_count)
+                       {
+                           for (; i < max_count; i++)
+                           {
+                            //    std::cout << "Start in multithread for id " << i << " " << max_count << std::endl;
+                               chai.eval(chain[smart_id]);
+                               ++smart_ex_count;
+                           }
+                       },
+                       count);
+
     auto end = system_clock::now();
     std::cout << "Duration time " << duration_cast<milliseconds>(end - start).count()/1000.0 << std::endl;
     std::cout << "Chain size: " << chain.size() << std::endl;
+    std::cout << "Smart count : " << smart_ex_count << std::endl;
 }

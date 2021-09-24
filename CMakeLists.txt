@@ -11,9 +11,9 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
 endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
-conan_cmake_run(REQUIRES chaiscript/6.1.0@
+conan_cmake_run(REQUIRES chaiscript/6.1.0@ leveldb/1.22@
         GENERATORS cmake cmake_paths cmake_find_package
-        BUILD_TYPE Debug
+        BUILD_TYPE Release 
         BASIC_SETUP CMAKE_TARGETS
 )
 
@@ -26,6 +26,14 @@ target_link_libraries(${PROJECT_NAME} CONAN_PKG::chaiscript)
 set(EX_EASY_CHAIN_TEST easy_chain_test)
 add_executable(${EX_EASY_CHAIN_TEST} easy-chain-test.cpp)
 target_link_libraries(${EX_EASY_CHAIN_TEST} CONAN_PKG::chaiscript)
+
+set(EX_MULTI_CHAIN_TEST multi_chain_test)
+add_executable(${EX_MULTI_CHAIN_TEST} multi-chain-test.cpp)
+target_link_libraries(${EX_MULTI_CHAIN_TEST} CONAN_PKG::chaiscript)
+
+set(EX_MULTI_CHAI_LEVEL_TEST level_multi_chai_test)
+add_executable(${EX_MULTI_CHAI_LEVEL_TEST} multi-chai-leveldb-test.cpp)
+target_link_libraries(${EX_MULTI_CHAI_LEVEL_TEST} CONAN_PKG::leveldb CONAN_PKG::chaiscript)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
